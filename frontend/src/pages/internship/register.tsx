@@ -40,8 +40,8 @@ export default function InternshipRegister() {
                 descricao: data.description,
                 requisitos: parseInt(data.requirements, 10),
                 orientador: {idUsuario: user.idUsuario},
-                empresa: data.empresaId ? {id: data.empresaId} : undefined, // Agora pode ser undefined
-                estagiario: undefined, // Pode ser omitido ou passado como undefined
+                empresa: data.empresaId ? {id: data.empresaId} : null, // Agora pode ser undefined
+                estagiario: null, // Pode ser omitido ou passado como undefined
             };
 
             const response = await apiService.createEstagio(postData);

@@ -31,5 +31,5 @@ export default function InternshipList() {
         fetchInternships();
     }, []);
 
-    return <InternshipListComponent internships={internships} title="Listas de Estágios" />;
+    return <InternshipListComponent internships={internships} title="Listas de Estágios" allowDetails={true} />;
 }

@@ -15,7 +15,7 @@ public class Empresa {
 
     private String nome;
 
-    private int telefone;
+    private Long telefone;
 
     private String email;
 
@@ -25,7 +25,7 @@ public class Empresa {
     public Empresa() {
     }
 
-    public Empresa(Integer id, String cnpj, String nome, int telefone, String email, List<Supervisor> supervisores) {
+    public Empresa(Integer id, String cnpj, String nome, Long telefone, String email, List<Supervisor> supervisores) {
         this.id = id;
         this.cnpj = cnpj;
         this.nome = nome;
@@ -69,11 +69,11 @@ public class Empresa {
         this.nome = nome;
     }
 
-    public int getTelefone() {
+    public Long getTelefone() {
         return telefone;
     }
 
-    public void setTelefone(int telefone) {
+    public void setTelefone(Long telefone) {
         this.telefone = telefone;
     }
 

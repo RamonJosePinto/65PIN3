@@ -3,6 +3,9 @@ import {ConfirmButtonGeneric} from "@/components/styles/Button.styles";
 import {Row} from "@/components/styles/Columns.styles";
 import {Col6Flex, FormLabel, Line, RegisterEmpresaForm, RegisterTitle} from "@/components/styles/enterprise/EnterpriseRegister.styles";
 import {SubmitHandler, useForm} from "react-hook-form";
+import {useRouter} from "next/router";
+import apiService from "@/api/ApiService";
+import {PostEmpresa} from "@/api/ApiTypes";
 
 // Definindo a interface para os inputs do formulário
 interface IFormInput {
@@ -21,15 +24,37 @@ export default function EmpresaRegister() {
         handleSubmit,
         formState: {errors},
     } = useForm<IFormInput>();
+    const router = useRouter();
 
-    const onSubmit: SubmitHandler<IFormInput> = data => {
-        console.log(data);
+    const onSubmit: SubmitHandler<IFormInput> = async data => {
+        try {
+            const empresaData: PostEmpresa = {
+                cnpj: data.cnpj,
+                nome: data.companyName,
+                telefone: parseInt(data.companyPhone, 10),
+                email: data.companyEmail,
+                supervisores: [
+                    {
+                        nome: data.supervisorName,
+                        cargo: data.supervisorRole,
+                        telefone: parseInt(data.supervisorPhone, 10),
+                    },
+                ],
+            };
+
+            await apiService.createEmpresa(empresaData);
+            alert("Empresa e supervisor cadastrados com sucesso!");
+            router.push("/internship/course");
+        } catch (error) {
+            console.error("Erro ao cadastrar empresa e supervisor:", error);
+            alert("Erro ao cadastrar empresa e supervisor. Tente novamente.");
+        }
     };
 
     return (
         <>
             <RegisterTitle>Cadastro de Empresa e Supervisor</RegisterTitle>
-            <RegisterEmpresaForm>
+            <RegisterEmpresaForm onSubmit={handleSubmit(onSubmit)}>
                 <h3>Identificação da empresa</h3>
                 <Row>
                     <Col6Flex>
@@ -88,8 +113,8 @@ export default function EmpresaRegister() {
                     </Col6Flex>
                 </Row>
 
-                <ConfirmButtonGeneric type="submit" onClick={handleSubmit(onSubmit)} style={{marginTop: 40, width: "30%", margin: "50px auto 0 auto"}}>
-                    Cadastrar
+                <ConfirmButtonGeneric type="submit" style={{marginTop: 40, width: "30%", margin: "50px auto 0 auto"}}>
+                    Continuar
                 </ConfirmButtonGeneric>
             </RegisterEmpresaForm>
         </>

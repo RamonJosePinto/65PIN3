@@ -1,5 +1,6 @@
 package com._PIN3.project.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -12,7 +13,8 @@ public class Estagio {
     private Integer idEstagio;
 
     @ManyToOne
-    @JoinColumn(name = "fk_estagiario", nullable = false)
+    @JoinColumn(name = "fk_estagiario")
+    @Nullable
     private Estagiario estagiario;
 
     @ManyToOne
@@ -20,7 +22,8 @@ public class Estagio {
     private Orientador orientador;
 
     @ManyToOne
-    @JoinColumn(name = "fk_empresa", nullable = false)
+    @JoinColumn(name = "fk_empresa")
+    @Nullable
     private Empresa empresa;
 
     private Date duracaoInicio;

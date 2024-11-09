@@ -28,12 +28,12 @@ interface InternshipListProps {
 export default function InternshipListComponent({internships, title, titleOfDisableButton = "Indisponível", allowDetails = false}: InternshipListProps) {
     const router = useRouter();
 
-    const handleCardClick = (internshipId: number) => {
-        console.log("teste")
-        if (allowDetails) {
-            router.push(`/internship/activities/${internshipId}`);
+    const handleCardClick = (internship: Estagio) => {
+        if (allowDetails && !internship.estagiario) {
+            router.push(`/internship/activities/${internship.idEstagio}`);
         }
     };
+    
 
     return (
         <InternshipListWrapper>
@@ -44,7 +44,7 @@ export default function InternshipListComponent({internships, title, titleOfDisa
                 </FilterButton>
             </HeaderListContainer>
             {internships.map(internship => (
-                <InternshipCard key={internship.idEstagio} onClick={() => handleCardClick(internship.idEstagio)}>
+                <InternshipCard key={internship.idEstagio} onClick={() => handleCardClick(internship)}>
                     <Container>
                         <ColumnWrapper>
                             <MentorLabel>

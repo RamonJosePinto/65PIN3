@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/enterprise")
+@RequestMapping("/api/enterprise")
 @CrossOrigin
 @Validated
 public class EmpresaResource {
@@ -26,9 +26,16 @@ public class EmpresaResource {
     }
 
     @PostMapping
-    public ResponseEntity createEmpresa(@RequestBody Empresa empresa) {
+    public ResponseEntity<Empresa> createEmpresa(@RequestBody Empresa empresa) {
+        // Define a referência da empresa para cada supervisor na lista
+        if (empresa.getSupervisores() != null) {
+            empresa.getSupervisores().forEach(supervisor -> supervisor.setEmpresa(empresa));
+        }
+
+        // Salva a empresa com os supervisores associados
         Empresa savedEmpresa = empresaRepository.save(empresa);
         System.out.println(empresa.toString());
         return ResponseEntity.status(200).body(savedEmpresa);
     }
+
 }

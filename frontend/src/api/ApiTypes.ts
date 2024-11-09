@@ -9,6 +9,13 @@ export type Estagiario = {
     curso: Curso;
 };
 
+export type Supervisor = {
+    id: number;
+    nome: string;
+    telefone: number;
+    cargo: string;
+};
+
 // Tipagem para Orientador
 export type Orientador = {
     idUsuario: number;
@@ -97,3 +104,11 @@ export type PostAtividade = Omit<Atividade, "idAtividade"> & {
 export type PostRelatorioFinal = Omit<RelatorioFinal, "idRelatorioFinal"> & {
     estagio: {idEstagio: number};
 };
+
+// Tipagem para POST de Empresa (exclui 'id')
+export type PostEmpresa = Omit<Empresa, 'id'> & {
+    supervisores: Omit<Supervisor, 'id' | 'empresa'>[]; // Exclui 'id' e 'empresa' de cada supervisor
+};
+
+
+export type PostSupervisor = Omit<Supervisor, "id">;

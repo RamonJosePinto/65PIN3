@@ -11,7 +11,7 @@ public class Supervisor {
 
     private String nome;
 
-    private int telefone;
+    private Long telefone;
 
     private String cargo;
 
@@ -19,7 +19,7 @@ public class Supervisor {
     @JsonIgnore
     private Empresa empresa;
 
-    public Supervisor(Integer id, String nome, int telefone, String cargo, Empresa empresa) {
+    public Supervisor(Integer id, String nome, Long telefone, String cargo, Empresa empresa) {
         this.id = id;
         this.nome = nome;
         this.telefone = telefone;
@@ -46,11 +46,11 @@ public class Supervisor {
         this.nome = nome;
     }
 
-    public int getTelefone() {
+    public Long getTelefone() {
         return telefone;
     }
 
-    public void setTelefone(int telefone) {
+    public void setTelefone(Long telefone) {
         this.telefone = telefone;
     }
 

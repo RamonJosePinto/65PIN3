@@ -66,11 +66,13 @@ export default function StageDetail() {
                 )}
             </DetailSection>
 
-            {user?.role === "estagiario" && (
-                <ButtonWrapper>
+            <ButtonWrapper>
+                {user?.role === "estagiario" && !stage.estagiario ? (
+                    <RegisterActivityButton onClick={() => router.push("/internship/enterprise")}>Inscrever-se no Estágio</RegisterActivityButton>
+                ) : user?.role === "estagiario" && stage.estagiario && stage.estagiario.idUsuario === user.idUsuario ? (
                     <RegisterActivityButton onClick={() => router.push(`/internship/activities/register/${stage.idEstagio}`)}>Cadastrar Atividade</RegisterActivityButton>
-                </ButtonWrapper>
-            )}
+                ) : null}
+            </ButtonWrapper>
         </DetailContainer>
     );
 }

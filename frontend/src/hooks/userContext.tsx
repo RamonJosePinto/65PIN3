@@ -1,3 +1,4 @@
+import {useRouter} from "next/router";
 import React, {createContext, useContext, useState, ReactNode} from "react";
 
 interface User {
@@ -9,6 +10,7 @@ interface User {
 interface UserContextProps {
     user: User | null;
     setUser: React.Dispatch<React.SetStateAction<User | null>>;
+    logout: () => void;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
@@ -16,7 +18,14 @@ const UserContext = createContext<UserContextProps | undefined>(undefined);
 export const UserProvider = ({children}: {children: ReactNode}) => {
     const [user, setUser] = useState<User | null>(null);
 
-    return <UserContext.Provider value={{user, setUser}}>{children}</UserContext.Provider>  ;
+    const router = useRouter();
+
+    const logout = () => {
+        setUser(null);
+        router.push("/"); // Redireciona para a página inicial ou login
+    };
+
+    return <UserContext.Provider value={{user, setUser, logout}}>{children}</UserContext.Provider>;
 };
 
 export const useUserContext = (): UserContextProps => {

@@ -1,5 +1,5 @@
 import axios from "axios";
-import {Atividade, Estagiario, Estagio, Orientador, PostAtividade, PostEstagio, PostRelatorioFinal, RelatorioFinal} from "./ApiTypes";
+import {Atividade, Curso, Empresa, Estagiario, Estagio, Orientador, PostAtividade, PostEmpresa, PostEstagio, PostRelatorioFinal, RelatorioFinal, Supervisor} from "./ApiTypes";
 
 const baseURL = axios.create({
     baseURL: "http://127.0.0.1:8080/api",
@@ -21,10 +21,10 @@ const apiService = {
         return response.data;
     },
 
-    async createAtividade(data: { estagio: { idEstagio: number }; data: string; horasTrabalhadas: number; descricao: string }): Promise<void> {
+    async createAtividade(data: {estagio: {idEstagio: number}; data: string; horasTrabalhadas: number; descricao: string}): Promise<void> {
         const response = await baseURL.post("/atividades", data);
         return response.data;
-    },    
+    },
 
     async getRelatorios(): Promise<RelatorioFinal[]> {
         const response = await baseURL.get<RelatorioFinal[]>("/relatorios");
@@ -47,7 +47,7 @@ const apiService = {
 
     async getOrientadorByEmail(email: string): Promise<Orientador | null> {
         try {
-            const response = await baseURL.get<Orientador>(`/orientadores?email=${email}`);
+            const response = await baseURL.get<Orientador>(`/orientadores/email?email=${email}`);
             return response.data;
         } catch {
             return null; // Retorna null se não encontrar o orientador
@@ -67,7 +67,7 @@ const apiService = {
         const response = await baseURL.get<Estagio[]>(`/estagios/orientador/${idOrientador}`);
         return response.data;
     },
-    
+
     async getEstagioById(idEstagio: number): Promise<Estagio> {
         const response = await baseURL.get<Estagio>(`/estagios/${idEstagio}`);
         return response.data;
@@ -78,6 +78,27 @@ const apiService = {
         return response.data;
     },
 
+    // Função de criação de empresa
+    async createEmpresa(data: PostEmpresa) {
+        const response = await baseURL.post("/enterprise", data);
+        return response.data;
+    },
+
+    async createSupervisor(supervisorData: Supervisor): Promise<Supervisor> {
+        const response = await baseURL.post("http://localhost:8080/supervisor", supervisorData);
+        return response.data;
+    },
+    async getCursos(): Promise<Curso[]> {
+        const response = await baseURL.get<Curso[]>("/cursos");
+        return response.data;
+    },
+    async createCurso(data: Omit<Curso, "idCurso">): Promise<Curso> {
+        const response = await baseURL.post<Curso>("/cursos", data);
+        return response.data;
+    },
+    async vincularEstagiarioAoCurso(courseId: number): Promise<void> {
+        await baseURL.post(`/estagiario/vincularCurso/${courseId}`);
+    },
 };
 
 export default apiService;

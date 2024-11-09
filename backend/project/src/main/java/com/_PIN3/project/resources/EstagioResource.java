@@ -39,14 +39,18 @@ public class EstagioResource {
 
     @PostMapping
     public ResponseEntity<Estagio> createEstagio(@RequestBody Estagio estagio) {
-        estagiarioRepository.findById(estagio.getEstagiario().getIdUsuario())
-                .ifPresent(estagio::setEstagiario);
+        if (estagio.getEstagiario() != null) {
+            estagiarioRepository.findById(estagio.getEstagiario().getIdUsuario())
+                    .ifPresent(estagio::setEstagiario);
+        }
+
+        if (estagio.getEmpresa() != null) {
+            empresaRepository.findById(estagio.getEmpresa().getId())
+                    .ifPresent(estagio::setEmpresa);
+        }
 
         orientadorRepository.findById(estagio.getOrientador().getIdUsuario())
                 .ifPresent(estagio::setOrientador);
-
-        empresaRepository.findById(estagio.getEmpresa().getId())
-                .ifPresent(estagio::setEmpresa);
 
         Estagio savedEstagio = estagioRepository.save(estagio);
         return ResponseEntity.status(201).body(savedEstagio);
