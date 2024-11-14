@@ -1,18 +1,23 @@
 import InternshipList from "@/components/InternshipList";
 import mockInternships from "@/mocks/intershipList.mock.json";
 import userData from "@/mocks/user.mock.json";
-import {UserProfile, ProfileDetails, DetailItem, UserWrapper, Row, ColLeft, ColRight} from "@/components/styles/user/UserPage.styles";
+import {UserProfile, ProfileDetails, DetailItem, UserWrapper, Row, ColLeft, ColRight, SubmittedStageItem} from "@/components/styles/user/UserPage.styles";
 import {useUserContext} from "@/hooks/userContext";
 import {Estagio} from "@/api/ApiTypes";
 import {useEffect, useState} from "react";
 import apiService from "@/api/ApiService";
 import {ConfirmButton} from "@/components/styles/LoginPage.styles";
 import Link from "next/link";
+import {useRouter} from "next/router";
 
 export default function UserInternships() {
     const {user} = useUserContext(); // Obtém o usuário do contexto
     const [internships, setInternships] = useState<Estagio[]>([]);
     const [userData, setUserData] = useState<any>({});
+    const [submittedStages, setSubmittedStages] = useState<Estagio[]>([]);
+    const router = useRouter();
+
+    console.log({submittedStages})
 
     useEffect(() => {
         if (user) {
@@ -43,6 +48,16 @@ export default function UserInternships() {
         }
     }, [user]);
 
+    useEffect(() => {
+        if (user?.role === "orientador") {
+            apiService.getSubmittedStages().then(setSubmittedStages).catch(console.error);
+        }
+    }, [user]);
+
+    const handleStageReview = (idRelatorioFinal: number, idEstagio: number) => {
+        router.push(`/internship/review/${idRelatorioFinal}?stageId=${idEstagio}`); // Passa ambos os IDs
+    };
+
     return (
         <Row>
             <ColLeft>
@@ -64,6 +79,23 @@ export default function UserInternships() {
                         </ProfileDetails>
                     </UserProfile>
                 </UserWrapper>
+                <div>
+                    {user?.role === "orientador" && (
+                        <section>
+                            <h3>Estágios Submetidos para Avaliação</h3>
+                            {submittedStages.length ? (
+                                submittedStages.map(stage => (
+                                    <SubmittedStageItem key={stage.idEstagio} onClick={() => handleStageReview(stage?.idRelatorioFinal, stage.estagio.idEstagio)}>
+                                        <p><strong>Estágio:</strong> {stage?.estagio?.descricao}</p>
+                                        <p><strong>Estagiário:</strong> {stage?.estagio?.estagiario?.nome}</p>
+                                    </SubmittedStageItem>
+                                ))
+                            ) : (
+                                <p>Nenhum estágio submetido no momento.</p>
+                            )}
+                        </section>
+                    )}
+                </div>
             </ColLeft>
 
             <ColRight>

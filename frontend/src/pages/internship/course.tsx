@@ -1,4 +1,4 @@
-import {FormGroupGeneric, FormInputGeneric} from "@/components/Form.styles";
+import {FormGroupGeneric, FormInputGeneric, SelectGeneric} from "@/components/Form.styles";
 import {ConfirmButtonGeneric} from "@/components/styles/Button.styles";
 import {Row} from "@/components/styles/Columns.styles";
 import {Col6Flex, FormLabel, RegisterCursoForm, RegisterTitle} from "@/components/styles/course/CourseRegister.styles";
@@ -6,6 +6,9 @@ import {SubmitHandler, useForm} from "react-hook-form";
 import {useEffect, useState} from "react";
 import apiService from "@/api/ApiService";
 import {Curso} from "@/api/ApiTypes"; // Tipagem para Curso
+import { useSignUpContext } from "@/hooks/SignUpContext";
+import { useRouter } from "next/router";
+import { useUserContext } from "@/hooks/userContext";
 
 // Interface para os inputs do formulário
 interface IFormInput {
@@ -21,6 +24,10 @@ export default function CursoCadastro() {
         handleSubmit,
         formState: {errors},
     } = useForm<IFormInput>();
+
+    const { companyId, setCourseId, courseId, estagioId, estagiarioId } = useSignUpContext();
+    const {user} = useUserContext();
+    const router = useRouter();
 
     const [cursos, setCursos] = useState<Curso[]>([]); // Estado para armazenar cursos existentes
     const [isNewCourse, setIsNewCourse] = useState<boolean>(true); // Controle para exibir campos de cadastro
@@ -44,11 +51,30 @@ export default function CursoCadastro() {
                     nome: data.courseName!,
                     campus: data.campus!,
                 };
-                await apiService.createCurso(cursoData); // Cria um novo curso
+                const newCourse = await apiService.createCurso(cursoData); // Cria um novo curso
+                setCourseId(newCourse.idCurso);
             } else if (data.selectedCourseId) {
                 // Vincula o curso selecionado
-                await apiService.vincularEstagiarioAoCurso(data.selectedCourseId);
+                // await apiService.vincularEstagiarioAoCurso(data.selectedCourseId);
+                setCourseId(data.selectedCourseId);
             }
+
+            await apiService.vincularEstagio({ 
+                estagioId: estagioId!,
+                estagiarioId: user?.idUsuario || 0,
+                companyId: companyId!,
+                courseId: courseId!
+              });
+             
+              
+              console.log({
+                estagioId,
+                estagiarioId,
+                companyId,
+                courseId,
+                user
+            })
+
             alert("Curso cadastrado ou selecionado com sucesso!");
         } catch (error) {
             console.error("Erro ao processar curso:", error);
@@ -64,14 +90,14 @@ export default function CursoCadastro() {
                     <Col6Flex>
                         <FormGroupGeneric>
                             <FormLabel>Selecionar curso existente</FormLabel>
-                            <select {...register("selectedCourseId")} onChange={e => setIsNewCourse(!e.target.value)}>
+                            <SelectGeneric {...register("selectedCourseId")} onChange={e => setIsNewCourse(!e.target.value)}>
                                 <option value="">Cadastrar novo curso</option>
                                 {cursos.map(curso => (
                                     <option key={curso.idCurso} value={curso.idCurso}>
                                         {curso.nome} - {curso.campus}
                                     </option>
                                 ))}
-                            </select>
+                            </SelectGeneric>
                         </FormGroupGeneric>
                     </Col6Flex>
                 </Row>

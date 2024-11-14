@@ -18,6 +18,7 @@ import Image from "next/image";
 import {Estagio} from "@/api/ApiTypes";
 import {formatDate} from "@/utils/DateFormat";
 import {useRouter} from "next/router";
+import { useUserContext } from "@/hooks/userContext";
 
 interface InternshipListProps {
     internships: Estagio[];
@@ -27,12 +28,18 @@ interface InternshipListProps {
 }
 export default function InternshipListComponent({internships, title, titleOfDisableButton = "Indisponível", allowDetails = false}: InternshipListProps) {
     const router = useRouter();
-
+    const {user} = useUserContext();
     const handleCardClick = (internship: Estagio) => {
-        if (allowDetails && !internship.estagiario) {
+        console.log({allowDetails, internshipIdEstagio: internship.idEstagio});
+        if (
+            !internship?.estagiario || (allowDetails &&
+            (internship?.estagiario?.idUsuario === user?.idUsuario || 
+             internship?.orientador?.idUsuario === user?.idUsuario))
+        ) {
             router.push(`/internship/activities/${internship.idEstagio}`);
         }
     };
+    
     
 
     return (

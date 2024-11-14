@@ -4,29 +4,54 @@ import apiService from "@/api/ApiService";
 import {Estagio, Atividade} from "@/api/ApiTypes";
 import {useUserContext} from "@/hooks/userContext";
 import {DetailContainer, DetailHeader, DetailSection, DetailItem, ButtonWrapper, RegisterActivityButton} from "@/components/styles/activities/ActivityDetails.styles";
+import {SignUpProvider, useSignUpContext} from "@/hooks/SignUpContext";
+import {ConfirmButtonGeneric} from "@/components/styles/Button.styles";
 
-export default function StageDetail() {
+export default function StageDetail({idExterno}: {idExterno: number}) {
     const {user} = useUserContext();
     const router = useRouter();
     const {id} = router.query;
     const [stage, setStage] = useState<Estagio | null>(null);
     const [activities, setActivities] = useState<Atividade[]>([]);
 
+    const {setEstagioId} = useSignUpContext();
+
     useEffect(() => {
-        if (id) {
+        const stageId = idExterno ?? Number(id)
+        if (stageId) {
+            setEstagioId(Number(stageId));
             // Busca detalhes do estágio
             apiService
-                .getEstagioById(Number(id))
+                .getEstagioById(Number(stageId))
                 .then(response => setStage(response))
                 .catch(error => console.error("Erro ao buscar estágio:", error));
 
             // Busca atividades relacionadas
             apiService
-                .getAtividadesByEstagioId(Number(id))
+                .getAtividadesByEstagioId(Number(stageId))
                 .then(response => setActivities(response))
                 .catch(error => console.error("Erro ao buscar atividades:", error));
         }
-    }, [id]);
+    }, [id, idExterno]);
+
+    const handleSubmitStage = async () => {
+        try {
+            // Submete o estágio para criação de um relatório final com status "Pendente"
+            const relatorioData = {
+                estagio: { idEstagio: id },
+                status: "Pendente",
+                dataSubmissao: new Date().toISOString(),
+                comentarioOrientador: null,
+                nota: null,
+            };
+    
+            await apiService.submitRelatorioFinal(relatorioData);
+            alert("Estágio submetido para avaliação com sucesso!");
+        } catch (error) {
+            console.error("Erro ao submeter o estágio:", error);
+            alert("Erro ao submeter o estágio para avaliação. Tente novamente.");
+        }
+    };
 
     if (!stage) return <p>Carregando...</p>;
 
@@ -72,6 +97,7 @@ export default function StageDetail() {
                 ) : user?.role === "estagiario" && stage.estagiario && stage.estagiario.idUsuario === user.idUsuario ? (
                     <RegisterActivityButton onClick={() => router.push(`/internship/activities/register/${stage.idEstagio}`)}>Cadastrar Atividade</RegisterActivityButton>
                 ) : null}
+                {user?.role === "estagiario" && <RegisterActivityButton onClick={handleSubmitStage}>Submeter para Avaliação</RegisterActivityButton>}
             </ButtonWrapper>
         </DetailContainer>
     );

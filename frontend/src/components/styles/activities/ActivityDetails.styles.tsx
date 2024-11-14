@@ -38,6 +38,7 @@ export const ButtonWrapper = styled.div`
     display: flex;
     justify-content: flex-end;
     margin-top: 20px;
+    gap: 20px;
 `;
 
 export const RegisterActivityButton = styled.button`

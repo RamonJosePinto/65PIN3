@@ -106,9 +106,16 @@ export type PostRelatorioFinal = Omit<RelatorioFinal, "idRelatorioFinal"> & {
 };
 
 // Tipagem para POST de Empresa (exclui 'id')
-export type PostEmpresa = Omit<Empresa, 'id'> & {
-    supervisores: Omit<Supervisor, 'id' | 'empresa'>[]; // Exclui 'id' e 'empresa' de cada supervisor
+export type PostEmpresa = Omit<Empresa, "id"> & {
+    supervisores: Omit<Supervisor, "id" | "empresa">[]; // Exclui 'id' e 'empresa' de cada supervisor
 };
 
+// ApiTypes.ts
+export type VincularEstagioRequest = {
+    estagioId: number;
+    estagiarioId: number;
+    companyId: number;
+    courseId: number;
+};
 
 export type PostSupervisor = Omit<Supervisor, "id">;

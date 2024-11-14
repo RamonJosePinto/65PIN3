@@ -1,11 +1,8 @@
 package com._PIN3.project.resources;
 
+import com._PIN3.project.model.*;
 import com._PIN3.project.model.Estagio;
-import com._PIN3.project.model.Estagio;
-import com._PIN3.project.repository.EmpresaRepository;
-import com._PIN3.project.repository.EstagiarioRepository;
-import com._PIN3.project.repository.EstagioRepository;
-import com._PIN3.project.repository.OrientadorRepository;
+import com._PIN3.project.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -30,6 +27,9 @@ public class EstagioResource {
 
     @Autowired
     EmpresaRepository empresaRepository;
+
+    @Autowired
+    CursoRepository cursoRepository;
 
     @GetMapping
     public ResponseEntity<List<Estagio>> getAllEstagios(){
@@ -74,5 +74,23 @@ public class EstagioResource {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @PostMapping("/vincular")
+    public ResponseEntity<?> vincularEstagio(@RequestBody VincularEstagioRequest request) {
+        Estagio estagio = estagioRepository.findById(request.getEstagioId()).orElseThrow();
+        Estagiario estagiario = estagiarioRepository.findById(request.getEstagiarioId()).orElseThrow();
+        Empresa empresa = empresaRepository.findById(request.getCompanyId()).orElseThrow();
+        Curso curso = cursoRepository.findById(request.getCourseId()).orElseThrow();
+
+        estagio.setEstagiario(estagiario);
+        estagio.setEmpresa(empresa);
+        estagiario.setCurso(curso);
+
+        estagioRepository.save(estagio);
+        estagiarioRepository.save(estagiario);
+
+        return ResponseEntity.ok("Vinculação concluída");
+    }
+
 
 }

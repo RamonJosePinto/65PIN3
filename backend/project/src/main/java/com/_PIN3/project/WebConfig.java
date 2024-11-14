@@ -15,7 +15,7 @@ public class WebConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Aplica CORS a todos os endpoints
                         .allowedOrigins("http://localhost:3000") // Altere para o frontend ou use "*" para permitir qualquer origem
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Permite métodos específicos
+                        .allowedMethods("*") // Permite métodos específicos
                         .allowedHeaders("*")
                         .allowCredentials(true); // Permite credenciais, se necessário
             }

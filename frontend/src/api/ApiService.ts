@@ -1,5 +1,19 @@
 import axios from "axios";
-import {Atividade, Curso, Empresa, Estagiario, Estagio, Orientador, PostAtividade, PostEmpresa, PostEstagio, PostRelatorioFinal, RelatorioFinal, Supervisor} from "./ApiTypes";
+import {
+    Atividade,
+    Curso,
+    Empresa,
+    Estagiario,
+    Estagio,
+    Orientador,
+    PostAtividade,
+    PostEmpresa,
+    PostEstagio,
+    PostRelatorioFinal,
+    RelatorioFinal,
+    Supervisor,
+    VincularEstagioRequest,
+} from "./ApiTypes";
 
 const baseURL = axios.create({
     baseURL: "http://127.0.0.1:8080/api",
@@ -99,6 +113,32 @@ const apiService = {
     async vincularEstagiarioAoCurso(courseId: number): Promise<void> {
         await baseURL.post(`/estagiario/vincularCurso/${courseId}`);
     },
+    async vincularEstagio(data: VincularEstagioRequest): Promise<void> {
+        await baseURL.post("/estagios/vincular", data);
+    },
+    async submitEstagio(idEstagio: number): Promise<void> {
+        await baseURL.put(`/estagios/${idEstagio}/submit`);
+    },
+    async submitRelatorioFinal(data: {
+        idEstagio: number;
+        comentarioOrientador: string;
+        status: string;
+        nota: number;
+    }): Promise<void> {
+        await baseURL.post("/relatorios/submeter", data);
+    },
+    async avaliarRelatorioFinal(id: number, updatedRelatorio: Partial<RelatorioFinal>): Promise<RelatorioFinal> {
+        const response = await baseURL.put<RelatorioFinal>(`/relatorios/avaliar/${id}`, updatedRelatorio);
+        return response.data;
+    },
+    async getSubmittedStages(): Promise<RelatorioFinal[]> {
+        const response = await baseURL.get<RelatorioFinal[]>("/relatorios/pendentes");
+        return response.data;
+    },
+    async getRelatorioById(id: number): Promise<RelatorioFinal> {
+        const response = await baseURL.get<RelatorioFinal>(`/relatorios/${id}`);
+        return response.data;
+    }
 };
 
 export default apiService;
