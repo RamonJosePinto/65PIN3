@@ -135,6 +135,10 @@ const apiService = {
         const response = await baseURL.get<RelatorioFinal[]>("/relatorios/pendentes");
         return response.data;
     },
+    async getRelatorioFinalByEstagiarioId(id: number): Promise<RelatorioFinal[]> {
+        const response = await baseURL.get<RelatorioFinal[]>(`/relatorios/estagiario/${id}`);
+        return response.data;
+    },
     async getRelatorioById(id: number): Promise<RelatorioFinal> {
         const response = await baseURL.get<RelatorioFinal>(`/relatorios/${id}`);
         return response.data;

@@ -51,7 +51,7 @@ export default function StageEvaluation() {
                 nota: grade,
             };
 
-            await apiService.avaliarRelatorioFinal(id, relatorioData);
+            await apiService.avaliarRelatorioFinal(idRelatorioFinal, relatorioData);
             alert("Avaliação enviada com sucesso!");
             router.push("/user"); // Redireciona para o perfil do usuário após a avaliação
         } catch (error) {

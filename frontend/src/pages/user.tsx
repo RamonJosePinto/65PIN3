@@ -1,7 +1,7 @@
 import InternshipList from "@/components/InternshipList";
 import mockInternships from "@/mocks/intershipList.mock.json";
 import userData from "@/mocks/user.mock.json";
-import {UserProfile, ProfileDetails, DetailItem, UserWrapper, Row, ColLeft, ColRight, SubmittedStageItem} from "@/components/styles/user/UserPage.styles";
+import {UserProfile, ProfileDetails, DetailItem, UserWrapper, Row, ColLeft, ColRight, SubmittedStageItem, StatusText} from "@/components/styles/user/UserPage.styles";
 import {useUserContext} from "@/hooks/userContext";
 import {Estagio} from "@/api/ApiTypes";
 import {useEffect, useState} from "react";
@@ -17,7 +17,7 @@ export default function UserInternships() {
     const [submittedStages, setSubmittedStages] = useState<Estagio[]>([]);
     const router = useRouter();
 
-    console.log({submittedStages})
+    console.log({submittedStages});
 
     useEffect(() => {
         if (user) {
@@ -51,11 +51,17 @@ export default function UserInternships() {
     useEffect(() => {
         if (user?.role === "orientador") {
             apiService.getSubmittedStages().then(setSubmittedStages).catch(console.error);
+        } else {
+            apiService.getRelatorioFinalByEstagiarioId(user?.idUsuario).then(setSubmittedStages).catch(console.error)
         }
     }, [user]);
 
     const handleStageReview = (idRelatorioFinal: number, idEstagio: number) => {
-        router.push(`/internship/review/${idRelatorioFinal}?stageId=${idEstagio}`); // Passa ambos os IDs
+        if(user?.role === "orientador"){
+            router.push(`/internship/review/${idRelatorioFinal}?stageId=${idEstagio}`); // Passa ambos os IDs
+        } else {
+            router.push(`/internship/activities/${idEstagio}`)
+        }
     };
 
     return (
@@ -86,10 +92,37 @@ export default function UserInternships() {
                             {submittedStages.length ? (
                                 submittedStages.map(stage => (
                                     <SubmittedStageItem key={stage.idEstagio} onClick={() => handleStageReview(stage?.idRelatorioFinal, stage.estagio.idEstagio)}>
-                                        <p><strong>Estágio:</strong> {stage?.estagio?.descricao}</p>
-                                        <p><strong>Estagiário:</strong> {stage?.estagio?.estagiario?.nome}</p>
+                                        <p>
+                                            <strong>Estágio:</strong> {stage?.estagio?.descricao}
+                                        </p>
+                                        <p>
+                                            <strong>Estagiário:</strong> {stage?.estagio?.estagiario?.nome}
+                                        </p>
                                     </SubmittedStageItem>
                                 ))
+                            ) : (
+                                <p>Nenhum estágio submetido no momento.</p>
+                            )}
+                        </section>
+                    )}
+                    {user?.role === "estagiario" && (
+                        <section>
+                            <h3>Estágios Submetidos e Avaliados</h3>
+                            {submittedStages.length ? (
+                                submittedStages.map(stage => {
+                                    return (
+                                    <SubmittedStageItem key={stage.idEstagio} onClick={() => handleStageReview(stage?.idRelatorioFinal, stage.estagio.idEstagio)}>
+                                        <p>
+                                            <strong>Estágio:</strong> {stage?.estagio?.descricao}
+                                        </p>
+                                        <p>
+                                            <strong>Estagiário:</strong> {stage?.estagio?.estagiario?.nome}
+                                        </p>
+                                        <StatusText status={stage?.status}>
+                                            <strong>Status:</strong> {stage?.status}
+                                        </StatusText>
+                                    </SubmittedStageItem>
+                                )})
                             ) : (
                                 <p>Nenhum estágio submetido no momento.</p>
                             )}

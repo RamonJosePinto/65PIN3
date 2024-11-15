@@ -60,4 +60,13 @@ public class RelatorioFinalResource {
         }
     }
 
+    @GetMapping("/estagiario/{idEstagiario}")
+    public ResponseEntity<List<RelatorioFinal>> getRelatoriosByEstagiarioId(@PathVariable Integer idEstagiario) {
+        List<RelatorioFinal> relatorios = relatorioFinalRepository.findByEstagiarioId(idEstagiario);
+        if (relatorios.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(relatorios);
+    }
+
 }

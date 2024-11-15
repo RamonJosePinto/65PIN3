@@ -53,3 +53,11 @@ export const SubmittedStageItem = styled.div`
         margin: 5px 0;
     }
 `;
+
+export const StatusText = styled.p<{ status: string }>`
+    font-weight: bold;
+    color: ${({ status }) =>
+        status === "Pendente" ? "orange" :
+        status === "Aprovado" ? "green" :
+        status === "Reprovado" ? "red" : "black"};
+`;
