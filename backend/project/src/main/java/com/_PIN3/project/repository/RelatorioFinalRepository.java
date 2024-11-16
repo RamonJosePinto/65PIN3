@@ -9,6 +9,10 @@ import java.util.List;
 
 public interface RelatorioFinalRepository extends JpaRepository<RelatorioFinal, Integer> {
     List<RelatorioFinal> findByStatus(String status); // Busca relatórios pelo status
+
     @Query("SELECT r FROM RelatorioFinal r WHERE r.estagio.estagiario.idUsuario = :idEstagiario")
     List<RelatorioFinal> findByEstagiarioId(@Param("idEstagiario") Integer idEstagiario);
+
+    @Query("SELECT r FROM RelatorioFinal r WHERE r.estagio.orientador.idUsuario = :idOrientador")
+    List<RelatorioFinal> findByEstagioOrientadorId(@Param("idOrientador") Integer idOrientador);
 }

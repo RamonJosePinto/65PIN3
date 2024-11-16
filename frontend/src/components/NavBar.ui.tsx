@@ -9,7 +9,7 @@ export default function NavBar() {
             <NavBarContainer>
                 <NavBarMenuList>
                     <NavBarMenuItem href={user && user != null ? "/user" : "/"}>{user && user != null ? "Perfil" : "Inicio"}</NavBarMenuItem>
-                    <NavBarMenuItem href={"/"}>Relatórios</NavBarMenuItem>
+                    <NavBarMenuItem href={"/reports"}>Relatórios</NavBarMenuItem>
                     <NavBarMenuItem href={"/internship/list"}>Estágios</NavBarMenuItem>
                     <NavBarMenuItem href={"/"}>Vagas</NavBarMenuItem>
                     {user && (

@@ -119,12 +119,7 @@ const apiService = {
     async submitEstagio(idEstagio: number): Promise<void> {
         await baseURL.put(`/estagios/${idEstagio}/submit`);
     },
-    async submitRelatorioFinal(data: {
-        idEstagio: number;
-        comentarioOrientador: string;
-        status: string;
-        nota: number;
-    }): Promise<void> {
+    async submitRelatorioFinal(data: {idEstagio: number; comentarioOrientador: string; status: string; nota: number}): Promise<void> {
         await baseURL.post("/relatorios/submeter", data);
     },
     async avaliarRelatorioFinal(id: number, updatedRelatorio: Partial<RelatorioFinal>): Promise<RelatorioFinal> {
@@ -142,7 +137,50 @@ const apiService = {
     async getRelatorioById(id: number): Promise<RelatorioFinal> {
         const response = await baseURL.get<RelatorioFinal>(`/relatorios/${id}`);
         return response.data;
-    }
+    },
+    async getRelatorioGeralEstagios(): Promise<Estagio[]> {
+        const response = await baseURL.get<Estagio[]>("/relatorios/estagios");
+        return response.data;
+    },
+
+    // Função para buscar relatórios gerais de atividades
+    async getRelatorioGeralAtividades(): Promise<Atividade[]> {
+        const response = await baseURL.get<Atividade[]>("/relatorios/atividades");
+        return response.data;
+    },
+
+    // Função para buscar relatórios gerais de avaliações de relatórios finais
+    async getRelatorioGeralAvaliacoes(): Promise<RelatorioFinal[]> {
+        const response = await baseURL.get<RelatorioFinal[]>("/relatorios/avaliacoes");
+        return response.data;
+    },
+    async getRelatorioAtividadesPorEstagiario(idEstagiario: number): Promise<Atividade[]> {
+        const response = await baseURL.get<Atividade[]>(`/relatorios/atividades/estagiario/${idEstagiario}`);
+        return response.data;
+    },
+
+    // Relatório de atividades submetidas em estágios orientados pelo orientador
+    async getRelatorioAtividadesPorOrientador(idOrientador: number): Promise<Atividade[]> {
+        const response = await baseURL.get<Atividade[]>(`/relatorios/atividades/orientador/${idOrientador}`);
+        return response.data;
+    },
+        // Relatório de estágios do estagiário
+        async getRelatorioEstagiosPorEstagiario(idEstagiario: number): Promise<Estagio[]> {
+            const response = await baseURL.get<Estagio[]>(`/relatorios/estagios/estagiario/${idEstagiario}`);
+            return response.data;
+        },
+    
+        // Relatório de estágios orientados pelo orientador
+        async getRelatorioEstagiosPorOrientador(idOrientador: number): Promise<Estagio[]> {
+            const response = await baseURL.get<Estagio[]>(`/relatorios/estagios/orientador/${idOrientador}`);
+            return response.data;
+        },
+    
+        // Relatório de avaliações realizadas pelo orientador
+        async getRelatorioAvaliacoesPorOrientador(idOrientador: number): Promise<RelatorioFinal[]> {
+            const response = await baseURL.get<RelatorioFinal[]>(`/relatorios/avaliacoes/orientador/${idOrientador}`);
+            return response.data;
+        },
 };
 
 export default apiService;
