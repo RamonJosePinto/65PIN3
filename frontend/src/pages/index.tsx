@@ -19,6 +19,7 @@ import {SubmitHandler, useForm} from "react-hook-form";
 import {useUserContext} from "@/hooks/userContext";
 import {SelectGeneric} from "@/components/Form.styles";
 import {useRouter} from "next/router";
+import Head from "next/head";
 
 interface IFormInput {
     email: string;
@@ -40,39 +41,63 @@ export default function Home() {
 
     const onSubmit: SubmitHandler<IFormInput> = async data => {
         try {
-            let user;
-            if (data.userType === "estagiario") {
-                user = await apiService.getEstagiarioByEmail(data.email);
-            } else {
-                user = await apiService.getOrientadorByEmail(data.email);
-            }
-
-            // Verifica se o usuário tem as propriedades necessárias
-            if (user && user.idUsuario && user.nome) {
+            const user = await apiService.login(data.email, data.password, data.userType);
+    
+            if (user) {
                 const userContextData = {
                     idUsuario: user.idUsuario,
                     nome: user.nome,
                     role: data.userType,
                 };
-                console.log({userContextData});
-                setUser(userContextData); // Atualiza o contexto com o usuário mapeado
+                setUser(userContextData);
                 alert("Login realizado com sucesso!");
-                console.log("Usuário logado:", user);
                 router.push("/user");
             } else {
                 setLoginError("Usuário ou senha inválidos.");
-                console.log("Login falhou: usuário não encontrado ou dados incompletos.");
             }
         } catch (error) {
             console.error("Erro ao realizar login:", error);
             setLoginError("Erro ao realizar login. Tente novamente.");
         }
+        // try {
+        //     let user;
+        //     if (data.userType === "estagiario") {
+        //         user = await apiService.getEstagiarioByEmail(data.email);
+        //     } else if (data.userType === "orientador"){
+        //         user = await apiService.getOrientadorByEmail(data.email);
+        //     } else {
+        //         user = await apiService.getCoordenadorByEmail(data.email);
+        //     }
+
+        //     // Verifica se o usuário tem as propriedades necessárias
+        //     if (user && user.idUsuario && user.nome) {
+        //         const userContextData = {
+        //             idUsuario: user.idUsuario,
+        //             nome: user.nome,
+        //             role: data.userType,
+        //         };
+        //         console.log({userContextData});
+        //         setUser(userContextData); // Atualiza o contexto com o usuário mapeado
+        //         alert("Login realizado com sucesso!");
+        //         console.log("Usuário logado:", user);
+        //         router.push("/user");
+        //     } else {
+        //         setLoginError("Usuário ou senha inválidos.");
+        //         console.log("Login falhou: usuário não encontrado ou dados incompletos.");
+        //     }
+        // } catch (error) {
+        //     console.error("Erro ao realizar login:", error);
+        //     setLoginError("Erro ao realizar login. Tente novamente.");
+        // }
     };
 
     const formValues = watch();
 
     return (
         <LoginPageContainer>
+             <Head>
+                <title>Login</title>
+            </Head>
             <form
                 style={{
                     background: "#fff",
@@ -104,6 +129,7 @@ export default function Home() {
                             <option value="">Selecione</option>
                             <option value="estagiario">Estagiário</option>
                             <option value="orientador">Orientador</option>
+                            <option value="coordenador">Coordenador</option>
                         </SelectGeneric>
                         {errors.userType && <ErrorSpan>Tipo de usuário é obrigatório</ErrorSpan>}
                     </FormGroup>

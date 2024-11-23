@@ -4,7 +4,7 @@ import React, {createContext, useContext, useState, ReactNode} from "react";
 interface User {
     idUsuario: number;
     nome: string;
-    role: "orientador" | "estagiario";
+    role: "orientador" | "estagiario" | "coordenador";
 }
 
 interface UserContextProps {

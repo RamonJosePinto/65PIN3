@@ -6,6 +6,8 @@ import {SubmitHandler, useForm} from "react-hook-form";
 import apiService from "@/api/ApiService";
 import {useUserContext} from "@/hooks/userContext";
 import {PostEstagio} from "@/api/ApiTypes";
+import {useRouter} from "next/router";
+import Head from "next/head";
 
 interface IFormInput {
     durationStart: string;
@@ -19,6 +21,7 @@ interface IFormInput {
 
 export default function InternshipRegister() {
     const {user} = useUserContext(); // Pega o usuário do contexto
+    const router = useRouter();
 
     const {
         register,
@@ -40,13 +43,16 @@ export default function InternshipRegister() {
                 descricao: data.description,
                 requisitos: parseInt(data.requirements, 10),
                 orientador: {idUsuario: user.idUsuario},
+                // @ts-ignore
                 empresa: data.empresaId ? {id: data.empresaId} : null, // Agora pode ser undefined
+                // @ts-ignore
                 estagiario: null, // Pode ser omitido ou passado como undefined
             };
 
             const response = await apiService.createEstagio(postData);
             console.log("Estágio cadastrado com sucesso:", response);
             alert("Estágio cadastrado com sucesso!");
+            router.push("/user");
         } catch (error) {
             console.error("Erro ao cadastrar estágio:", error);
             alert("Erro ao cadastrar estágio. Tente novamente.");
@@ -55,6 +61,9 @@ export default function InternshipRegister() {
 
     return (
         <>
+            <Head>
+                <title>Cadastro de estágio</title>
+            </Head>
             <RegisterTitle>Cadastro de estágio</RegisterTitle>
             <RegisterInternshipForm onSubmit={handleSubmit(onSubmit)}>
                 <Row>

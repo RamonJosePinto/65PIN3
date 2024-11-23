@@ -69,4 +69,20 @@ public class RelatorioFinalResource {
         return ResponseEntity.ok(relatorios);
     }
 
+    @GetMapping("/pendentes/orientador/{idOrientador}")
+    public ResponseEntity<List<RelatorioFinal>> getPendentesByOrientador(@PathVariable Integer idOrientador) {
+        List<RelatorioFinal> pendentes = relatorioFinalRepository.findPendentesByOrientadorId(idOrientador);
+        if (pendentes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(pendentes);
+    }
+
+    @GetMapping("/estagio/{idEstagio}")
+    public ResponseEntity<RelatorioFinal> getRelatorioByEstagioId(@PathVariable Integer idEstagio) {
+        Optional<RelatorioFinal> relatorioOptional = relatorioFinalRepository.findByEstagioId(idEstagio);
+        return relatorioOptional.map(ResponseEntity::ok).orElse(ResponseEntity.noContent().build());
+    }
+
+
 }

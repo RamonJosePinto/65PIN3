@@ -15,7 +15,7 @@ import {
 
 import filterIcon from "@/assets/icons/filter-icon.svg";
 import Image from "next/image";
-import {Estagio} from "@/api/ApiTypes";
+import {Estagio, RelatorioFinal} from "@/api/ApiTypes";
 import {formatDate} from "@/utils/DateFormat";
 import {useRouter} from "next/router";
 import { useUserContext } from "@/hooks/userContext";
@@ -40,7 +40,24 @@ export default function InternshipListComponent({internships, title, titleOfDisa
         }
     };
     
+    const getRegisterButtonText = (internship: Estagio & { relatorio?: RelatorioFinal | null }): string => {
+        if (user?.role === "orientador") {
+            return "Ver Detalhes";
+        }
     
+        if (internship.relatorio) {
+            // Verifica o status do relatório e ajusta o texto
+            if (internship.relatorio.status === "Aprovado") {
+                return "Estágio Aprovado";
+            } else if (internship.relatorio.status === "Reprovado") {
+                return "Estágio Reprovado";
+            } else if (internship.relatorio.status === "Pendente") {
+                return "Aguardando Avaliação";
+            }
+        }
+    
+        return internship.estagiario ? titleOfDisableButton : "Inscrever-se";
+    };
 
     return (
         <InternshipListWrapper>
@@ -69,7 +86,8 @@ export default function InternshipListComponent({internships, title, titleOfDisa
                         </ColumnWrapper>
                     </Container>
                     <Container>
-                        <RegisterButton isAvailable={!internship.estagiario}>{internship.estagiario ? titleOfDisableButton : "Inscrever-se"}</RegisterButton>
+                        {/* @ts-ignore */}
+                        <RegisterButton isAvailable={!internship.estagiario}  status={internship?.relatorio?.status}>{getRegisterButtonText(internship)}</RegisterButton>
                     </Container>
                 </InternshipCard>
             ))}

@@ -21,6 +21,10 @@ export const InternshipCard = styled.div`
     margin-bottom: 20px;
     border-radius: 10px;
     color: #363843;
+    cursor: pointer;
+    &:hover{
+        background-color: #e6f7ff;
+    }
 `;
 
 export const Bolder = styled.b``;
@@ -61,10 +65,26 @@ export const Status = styled.p<StatusProps>`
 
 interface ButtonProps {
     isAvailable: boolean;
+    status?: string; 
 }
 
 export const RegisterButton = styled.button<ButtonProps>`
-    background-color: ${props => (props.isAvailable ? "#28A745" : "#BFBFBF")};
+    background-color: ${props => {
+        switch (props.status) {
+            case "Aprovado":
+                return "#28A745"; // Verde
+            case "Reprovado":
+                return "#DC3545"; // Vermelho
+            case "Em andamento":
+                return "#17A2B8"; // Azul claro
+            case "Indisponível":
+                return "#DC3545"; // Vermelho
+            case "Inscrever-se":
+                return "#28A745"; // Verde
+            default:
+                return props.isAvailable ? "#28A745" : "#BFBFBF"; // Cinza padrão
+        }
+    }};
     width: 200px;
     color: white;
     border: none;

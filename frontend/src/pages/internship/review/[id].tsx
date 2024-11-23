@@ -6,6 +6,7 @@ import {ConfirmButtonGeneric} from "@/components/styles/Button.styles";
 import {FormGroupGeneric, FormInputGeneric} from "@/components/Form.styles";
 import StageDetail from "../activities/[id]";
 import {FormLabel} from "@/components/styles/LoginPage.styles";
+import Head from "next/head";
 
 export default function StageEvaluation() {
     const router = useRouter();
@@ -17,7 +18,7 @@ export default function StageEvaluation() {
     const [status, setStatus] = useState("Pendente");
     const [grade, setGrade] = useState<number | null>(null);
 
-    console.log(stage)
+    console.log(stage);
 
     useEffect(() => {
         if (idRelatorioFinal) {
@@ -50,7 +51,7 @@ export default function StageEvaluation() {
                 comentarioOrientador: comment,
                 nota: grade,
             };
-
+            //@ts-ignore
             await apiService.avaliarRelatorioFinal(idRelatorioFinal, relatorioData);
             alert("Avaliação enviada com sucesso!");
             router.push("/user"); // Redireciona para o perfil do usuário após a avaliação
@@ -63,6 +64,9 @@ export default function StageEvaluation() {
     return (
         // <Container>
         <div className="row">
+            <Head>
+                <title>Avaliar estágio</title>
+            </Head>
             {/* Coluna com detalhes do estágio */}
             <div className="col-8">
                 <StageDetail idExterno={Number(idEstagio)} /> {/* Passa o ID do estágio como prop para reutilizar StageDetail */}
@@ -70,7 +74,18 @@ export default function StageEvaluation() {
 
             {/* Coluna com o formulário de avaliação */}
             <div className="col-4">
-                <div style={{background: "#fff", borderRadius: 5, border: "1px solid #eaeaed", padding: "10px 20px", display: "flex", flexDirection: "column", justifyContent: "center", alignContent: "center"}}>
+                <div
+                    style={{
+                        background: "#fff",
+                        borderRadius: 5,
+                        border: "1px solid #eaeaed",
+                        padding: "10px 20px",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignContent: "center",
+                    }}
+                >
                     <h2>Avaliação do Estágio</h2>
                     <FormGroupGeneric>
                         <FormLabel>Comentários:</FormLabel>

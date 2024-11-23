@@ -5,6 +5,8 @@ import {useUserContext} from "@/hooks/userContext";
 import {Atividade, Estagio, RelatorioFinal} from "@/api/ApiTypes";
 import apiService from "@/api/ApiService";
 import { formatDate } from "@/utils/DateFormat";
+import styled from "styled-components";
+import Head from "next/head";
 
 // Registrar componentes do Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -89,28 +91,28 @@ const Reports = () => {
 
     // Botões de relatórios com base no tipo de usuário
     const renderButtons = () => {
-        if (user.role === "estagiario") {
+        if (user?.role === "estagiario") {
             return (
-                <>
-                    <button onClick={() => setActiveReport("estagios")}>Relatório de Estágios</button>
-                    <button onClick={() => setActiveReport("atividades")}>Relatório de Atividades</button>
-                </>
+                <ButtonWrapper>
+                    <ReportsButton onClick={() => setActiveReport("estagios")}>Relatório de Estágios</ReportsButton>
+                    <ReportsButton onClick={() => setActiveReport("atividades")}>Relatório de Atividades</ReportsButton>
+                </ButtonWrapper>
             );
-        } else if (user.role === "orientador") {
+        } else if (user?.role === "orientador") {
             return (
-                <>
-                    <button onClick={() => setActiveReport("estagios")}>Relatório de Estágios Orientados</button>
-                    <button onClick={() => setActiveReport("atividades")}>Relatório de Atividades Orientadas</button>
-                    <button onClick={() => setActiveReport("avaliacoes")}>Relatório de Avaliações</button>
-                </>
+                <ButtonWrapper>
+                    <ReportsButton onClick={() => setActiveReport("estagios")}>Relatório de Estágios Orientados</ReportsButton>
+                    <ReportsButton onClick={() => setActiveReport("atividades")}>Relatório de Atividades Orientadas</ReportsButton>
+                    <ReportsButton onClick={() => setActiveReport("avaliacoes")}>Relatório de Avaliações</ReportsButton>
+                </ButtonWrapper>
             );
-        } else if (user.role === "coordenador") {
+        } else if (user?.role === "coordenador") {
             return (
-                <>
-                    <button onClick={() => setActiveReport("estagios")}>Relatório Geral de Estágios</button>
-                    <button onClick={() => setActiveReport("atividades")}>Relatório Geral de Atividades</button>
-                    <button onClick={() => setActiveReport("avaliacoes")}>Relatório Geral de Avaliações</button>
-                </>
+                <ButtonWrapper>
+                    <ReportsButton onClick={() => setActiveReport("estagios")}>Relatório Geral de Estágios</ReportsButton>
+                    <ReportsButton onClick={() => setActiveReport("atividades")}>Relatório Geral de Atividades</ReportsButton>
+                    <ReportsButton onClick={() => setActiveReport("avaliacoes")}>Relatório Geral de Avaliações</ReportsButton>
+                </ButtonWrapper>
             );
         }
         return null;
@@ -118,6 +120,9 @@ const Reports = () => {
 
     return (
         <div>
+             <Head>
+                <title>Relatórios</title>
+            </Head>
             <h1>Relatórios</h1>
             <div>{renderButtons()}</div>
             <Bar data={getChartData()} key={activeReport} />
@@ -126,3 +131,16 @@ const Reports = () => {
 };
 
 export default Reports;
+
+
+const ReportsButton = styled.button`
+    background: #fff;
+    border: 1px solid #eaeaed;
+    border-radius: 5px;
+    padding: 5px 20px;
+`;
+
+const ButtonWrapper = styled.div`
+    display: flex;
+    gap: 20px;
+`;

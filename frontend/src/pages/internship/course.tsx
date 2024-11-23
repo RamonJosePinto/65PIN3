@@ -6,9 +6,10 @@ import {SubmitHandler, useForm} from "react-hook-form";
 import {useEffect, useState} from "react";
 import apiService from "@/api/ApiService";
 import {Curso} from "@/api/ApiTypes"; // Tipagem para Curso
-import { useSignUpContext } from "@/hooks/SignUpContext";
-import { useRouter } from "next/router";
-import { useUserContext } from "@/hooks/userContext";
+import {useSignUpContext} from "@/hooks/SignUpContext";
+import {useRouter} from "next/router";
+import {useUserContext} from "@/hooks/userContext";
+import Head from "next/head";
 
 // Interface para os inputs do formulário
 interface IFormInput {
@@ -25,7 +26,7 @@ export default function CursoCadastro() {
         formState: {errors},
     } = useForm<IFormInput>();
 
-    const { companyId, setCourseId, courseId, estagioId, estagiarioId } = useSignUpContext();
+    const {companyId, setCourseId, courseId, estagioId, estagiarioId} = useSignUpContext();
     const {user} = useUserContext();
     const router = useRouter();
 
@@ -46,44 +47,50 @@ export default function CursoCadastro() {
 
     const onSubmit: SubmitHandler<IFormInput> = async data => {
         try {
+            let newCourseId = courseId; // Variável local para evitar dependência direta do estado
+
             if (isNewCourse) {
                 const cursoData = {
                     nome: data.courseName!,
                     campus: data.campus!,
                 };
                 const newCourse = await apiService.createCurso(cursoData); // Cria um novo curso
-                setCourseId(newCourse.idCurso);
+                newCourseId = newCourse.idCurso; // Captura o ID do novo curso
+                setCourseId(newCourse.idCurso); // Atualiza o estado para consistência futura
             } else if (data.selectedCourseId) {
-                // Vincula o curso selecionado
-                // await apiService.vincularEstagiarioAoCurso(data.selectedCourseId);
+                newCourseId = data.selectedCourseId; // Captura o curso selecionado
                 setCourseId(data.selectedCourseId);
             }
 
-            await apiService.vincularEstagio({ 
+            // Aguarda a vinculação do estágio usando o ID do curso atualizado
+            await apiService.vincularEstagio({
                 estagioId: estagioId!,
                 estagiarioId: user?.idUsuario || 0,
                 companyId: companyId!,
-                courseId: courseId!
-              });
-             
-              
-              console.log({
+                courseId: newCourseId!,
+            });
+
+            console.log({
                 estagioId,
                 estagiarioId,
                 companyId,
-                courseId,
-                user
-            })
+                courseId: newCourseId,
+                user,
+            });
 
-            alert("Curso cadastrado ou selecionado com sucesso!");
+            alert("Curso cadastrado ou selecionado e estágio vinculado com sucesso!");
+            router.push("/user");
         } catch (error) {
-            console.error("Erro ao processar curso:", error);
-            alert("Erro ao processar curso. Tente novamente.");
+            console.error("Erro ao processar curso ou vincular estágio:", error);
+            alert("Erro ao processar curso ou vincular estágio. Tente novamente.");
         }
     };
 
     return (
         <>
+            <Head>
+                <title>Seleção do curso</title>
+            </Head>
             <RegisterTitle>Seleção do curso</RegisterTitle>
             <RegisterCursoForm>
                 <Row>

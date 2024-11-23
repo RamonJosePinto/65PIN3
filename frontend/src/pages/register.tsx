@@ -13,6 +13,7 @@ import {
     Row,
     Wrapper,
 } from "@/components/styles/RegisterPage.styles";
+import Head from "next/head";
 import {useState} from "react";
 import {SubmitHandler, useForm} from "react-hook-form";
 import * as yup from "yup";
@@ -76,6 +77,9 @@ export default function RegisterPage() {
 
     return (
         <RegisterPageContainer>
+             <Head>
+                <title>Cadastro de usuário</title>
+            </Head>
             <RegisterPageForm onSubmit={handleSubmit(onSubmit)}>
                 <FormTitle>Efetue seu Cadastro</FormTitle>
                 <InputsWrapper>

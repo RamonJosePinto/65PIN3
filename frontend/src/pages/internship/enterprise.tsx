@@ -6,7 +6,8 @@ import {SubmitHandler, useForm} from "react-hook-form";
 import {useRouter} from "next/router";
 import apiService from "@/api/ApiService";
 import {PostEmpresa} from "@/api/ApiTypes";
-import { useSignUpContext } from "@/hooks/SignUpContext";
+import {useSignUpContext} from "@/hooks/SignUpContext";
+import Head from "next/head";
 
 // Definindo a interface para os inputs do formulário
 interface IFormInput {
@@ -25,7 +26,7 @@ export default function EmpresaRegister() {
         handleSubmit,
         formState: {errors},
     } = useForm<IFormInput>();
-    const { setCompanyId, estagioId, estagiarioId } = useSignUpContext();
+    const {setCompanyId, estagioId, estagiarioId} = useSignUpContext();
     const router = useRouter();
 
     const onSubmit: SubmitHandler<IFormInput> = async data => {
@@ -44,7 +45,7 @@ export default function EmpresaRegister() {
                 ],
             };
 
-           const response = await apiService.createEmpresa(empresaData);
+            const response = await apiService.createEmpresa(empresaData);
             alert("Empresa e supervisor cadastrados com sucesso!");
             setCompanyId(response.id);
             router.push("/internship/course");
@@ -56,6 +57,9 @@ export default function EmpresaRegister() {
 
     return (
         <>
+            <Head>
+                <title>Cadastro de Empresa e Supervisor</title>
+            </Head>
             <RegisterTitle>Cadastro de Empresa e Supervisor</RegisterTitle>
             <RegisterEmpresaForm onSubmit={handleSubmit(onSubmit)}>
                 <h3>Identificação da empresa</h3>

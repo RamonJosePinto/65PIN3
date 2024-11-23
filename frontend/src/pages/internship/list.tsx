@@ -15,6 +15,7 @@ import InternshipListComponent from "@/components/InternshipList";
 import {useEffect, useState} from "react";
 import {Estagio} from "@/api/ApiTypes";
 import apiService from "@/api/ApiService";
+import Head from "next/head";
 
 export default function InternshipList() {
     const [internships, setInternships] = useState<Estagio[]>([]);
@@ -31,5 +32,12 @@ export default function InternshipList() {
         fetchInternships();
     }, []);
 
-    return <InternshipListComponent internships={internships} title="Listas de Estágios" allowDetails={true} />;
+    return (
+        <>
+            <Head>
+                <title>Lista de estágios</title>
+            </Head>
+            <InternshipListComponent internships={internships} title="Listas de Estágios" allowDetails={true} />
+        </>
+    );
 }
