@@ -13,8 +13,9 @@ services:
             - postgres_data:/var/lib/postgresql/data
 
     backend:
-        build:
-            context: ./backend/project
+        # build:
+        #     context: ./backend/project
+        image: ramonjosep/65pin3:backend
         container_name: backend-app
         depends_on:
             - postgres
@@ -26,8 +27,9 @@ services:
             - "8080:8080"
 
     frontend:
-        build:
-            context: ./frontend
+        # build:
+        #     context: ./frontend
+        image: ramonjosep/65pin3:frontend
         container_name: frontend-app
         ports:
             - "3000:3000"

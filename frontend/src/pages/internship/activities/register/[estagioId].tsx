@@ -75,6 +75,7 @@ export default function ActivityRegister() {
                                 <option value="Desenvolvimento do projeto">Desenvolvimento do projeto</option>
                                 <option value="Reunião com a equipe">Reunião com a equipe</option>
                                 <option value="Documentação">Documentação</option>
+                                <option value="Outro">Outro</option>
                             </FormInputGeneric>
                             {errors.activityType && <span>{errors.activityType.message}</span>}
                         </FormGroupGeneric>

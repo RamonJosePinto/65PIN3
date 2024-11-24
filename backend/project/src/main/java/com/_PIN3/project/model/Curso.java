@@ -1,5 +1,6 @@
 package com._PIN3.project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class Curso {
     private List<Estagiario> estagiarios;
 
     @OneToMany(mappedBy = "curso")
+    @JsonIgnore
     private List<Orientador> orientadores;
 
     @OneToMany(mappedBy = "curso")

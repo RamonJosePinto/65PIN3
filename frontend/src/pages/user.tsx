@@ -72,7 +72,7 @@ export default function UserInternships() {
                 .catch(console.error);
         } else {
             apiService
-            // @ts-ignore
+                // @ts-ignore
                 .getRelatorioFinalByEstagiarioId(user?.idUsuario)
                 .then(data => setSubmittedStages(Array.isArray(data) ? data : []))
                 .catch(console.error);
@@ -142,7 +142,7 @@ export default function UserInternships() {
 
     return (
         <Row>
-             <Head>
+            <Head>
                 <title>Perfil do usuário</title>
             </Head>
             <ColLeft>
@@ -180,6 +180,9 @@ export default function UserInternships() {
                                         <p>
                                             <strong>Estagiário:</strong> {stage?.estagio?.estagiario?.nome}
                                         </p>
+                                        <StatusText status={stage?.status}>
+                                            <strong>Status:</strong> {stage?.status}
+                                        </StatusText>
                                     </SubmittedStageItem>
                                 ))
                             ) : (

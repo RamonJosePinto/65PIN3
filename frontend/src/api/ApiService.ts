@@ -205,7 +205,7 @@ const apiService = {
             throw error;
         }
     },
-    async registerOrientador(data: {nome: string; email: string; senha: string; telefone: string; dataNascimento: string; cursoId: number}): Promise<void> {
+    async registerOrientador(data: {nome: string; email: string; senha: string; telefone: string; dataNascimento: string; curso: {idCurso: number}}): Promise<void> {
         await baseURL.post("/orientadores", data);
     },
     async login(email: string, senha: string, role: string): Promise<any> {
@@ -213,6 +213,16 @@ const apiService = {
             params: {email, senha, role},
         });
         return response.data;
+    },
+    // No apiService
+    async verificarEstagioEmAndamento(idEstagiario: number): Promise<string> {
+        try {
+            const response = await baseURL.get(`/estagios/verificar-estagio?idEstagiario=${idEstagiario}`);
+            return response.data; // Retorna a mensagem do backend.
+        } catch (error) {
+            console.error("Erro ao verificar estágio em andamento:", error);
+            return "Erro ao verificar estágio.";
+        }
     },
 };
 

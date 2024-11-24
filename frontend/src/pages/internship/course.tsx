@@ -120,13 +120,13 @@ export default function CursoCadastro() {
                                 </FormGroupGeneric>
                             </Col6Flex>
 
-                            <Col6Flex>
+                            {/* <Col6Flex>
                                 <FormGroupGeneric>
                                     <FormLabel>Semestre atual</FormLabel>
                                     <FormInputGeneric type="text" {...register("semester", {required: "Semestre é obrigatório"})} />
                                     {errors.semester && <span>{errors.semester.message}</span>}
                                 </FormGroupGeneric>
-                            </Col6Flex>
+                            </Col6Flex> */}
                         </Row>
 
                         <Row>

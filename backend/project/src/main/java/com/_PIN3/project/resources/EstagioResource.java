@@ -8,7 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -27,6 +30,9 @@ public class EstagioResource {
 
     @Autowired
     EmpresaRepository empresaRepository;
+
+    @Autowired
+    private RelatorioFinalRepository relatorioFinalRepository;
 
     @Autowired
     CursoRepository cursoRepository;
@@ -92,5 +98,14 @@ public class EstagioResource {
         return ResponseEntity.ok("Vinculação concluída");
     }
 
+    @GetMapping("/verificar-estagio")
+    public ResponseEntity<String> verificarEstagio(@RequestParam Integer idEstagiario) {
+        Optional<Estagio> estagioEmAndamento = estagioRepository.findEstagioEmAndamento(idEstagiario);
 
+        if (estagioEmAndamento.isPresent()) {
+            return ResponseEntity.ok("Você já está vinculado a um estágio em andamento.");
+        }
+
+        return ResponseEntity.ok("Você não está vinculado a nenhum estágio em andamento.");
+    }
 }

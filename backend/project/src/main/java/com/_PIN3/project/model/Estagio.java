@@ -30,13 +30,13 @@ public class Estagio {
     private Date duracaoFim;
     private String tipo;
     private String descricao;
-    private Integer requisitos;
+    private String requisitos;
 
 
     public Estagio() {
     }
 
-    public Estagio(Integer idEstagio, Estagiario estagiario, Orientador orientador, Empresa empresa, Date duracaoInicio, Date duracaoFim, String tipo, String descricao, Integer requisitos) {
+    public Estagio(Integer idEstagio, Estagiario estagiario, Orientador orientador, Empresa empresa, Date duracaoInicio, Date duracaoFim, String tipo, String descricao, String requisitos) {
         this.idEstagio = idEstagio;
         this.estagiario = estagiario;
         this.orientador = orientador;
@@ -112,11 +112,11 @@ public class Estagio {
         this.descricao = descricao;
     }
 
-    public Integer getRequisitos() {
+    public String getRequisitos() {
         return requisitos;
     }
 
-    public void setRequisitos(Integer requisitos) {
+    public void setRequisitos(String requisitos) {
         this.requisitos = requisitos;
     }
 }

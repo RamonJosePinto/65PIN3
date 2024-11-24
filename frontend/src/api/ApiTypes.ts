@@ -65,7 +65,7 @@ export type Estagio = {
     duracaoFim: string; // ISO Date string
     tipo: string;
     descricao: string;
-    requisitos: number;
+    requisitos: string;
 };
 
 // Tipagem para Atividade

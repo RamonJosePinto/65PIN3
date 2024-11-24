@@ -96,3 +96,55 @@ export const ProgressBar = ({current, total}: {current: number; total: number}) 
         </ProgressBarWrapper>
     );
 };
+
+export const RelatorioContainer = styled(DetailContainer)<{status: string}>`
+    margin-top: 20px;
+    background-color: #fff;
+    border-left: 4px solid ${props => (props.status === "Aprovado" ? "#4caf50" : "#f44336")};
+`;
+
+export const RelatorioHeader = styled(DetailHeader)<{status: string}>`
+    h1 {
+        font-size: 24px;
+        color: ${props => (props.status === "Aprovado" ? "#4caf50" : "#f44336")};
+    }
+`;
+
+export const RelatorioItem = styled(DetailItem)`
+    font-size: 14px;
+    color: #555;
+`;
+
+export const EstagiarioContainer = styled(DetailContainer)`
+    margin-top: 20px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #2196f3;
+`;
+
+export const EstagiarioHeader = styled(DetailHeader)`
+    h1 {
+        font-size: 24px;
+        color: #2196f3;
+    }
+`;
+
+export const EstagiarioItem = styled(DetailItem)`
+    font-size: 14px;
+    color: #555;
+`;
+
+export const SideBySideContainer = styled.div`
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+
+    /* Ajusta para que o único item ocupe todo o espaço */
+    > div {
+        flex: 1;
+    }
+
+    /* Em telas menores, organiza os itens em coluna */
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+`;

@@ -22,4 +22,6 @@ public interface RelatorioFinalRepository extends JpaRepository<RelatorioFinal, 
 
     @Query("SELECT r FROM RelatorioFinal r WHERE r.estagio.idEstagio = :idEstagio")
     Optional<RelatorioFinal> findByEstagioId(@Param("idEstagio") Integer idEstagio);
+
+    Optional<RelatorioFinal> findByEstagio_Estagiario_IdUsuarioAndStatusNot(Integer idUsuario, String status);
 }

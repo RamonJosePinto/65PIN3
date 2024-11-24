@@ -15,7 +15,7 @@ interface IFormInput {
     typeOfInternship: string;
     description: string;
     requirements: string;
-    observations: string;
+    // observations: string;
     empresaId?: number; // ID da empresa é opcional
 }
 
@@ -41,7 +41,7 @@ export default function InternshipRegister() {
                 duracaoFim: data.durationEnd,
                 tipo: data.typeOfInternship,
                 descricao: data.description,
-                requisitos: parseInt(data.requirements, 10),
+                requisitos: data.requirements,
                 orientador: {idUsuario: user.idUsuario},
                 // @ts-ignore
                 empresa: data.empresaId ? {id: data.empresaId} : null, // Agora pode ser undefined
@@ -73,9 +73,14 @@ export default function InternshipRegister() {
                             <FormInputGeneric type="date" {...register("durationStart", {required: "Data de início é obrigatória"})} />
                             {errors.durationStart && <span>{errors.durationStart.message}</span>}
                         </FormGroupGeneric>
-                        <FormGroupGeneric>
+                        {/* <FormGroupGeneric>
                             <FormLabel>Observações</FormLabel>
                             <TextAreaGeneric {...register("observations")} />
+                        </FormGroupGeneric> */}
+                        <FormGroupGeneric>
+                            <FormLabel>Descrição do Estágio</FormLabel>
+                            <TextAreaGeneric {...register("description", {required: "Descrição é obrigatória"})} />
+                            {errors.description && <span>{errors.description.message}</span>}
                         </FormGroupGeneric>
                     </Col6Flex>
                     <Col6Flex>
@@ -88,11 +93,6 @@ export default function InternshipRegister() {
                             <FormLabel>Tipo de Estágio</FormLabel>
                             <FormInputGeneric type="text" {...register("typeOfInternship", {required: "Tipo de estágio é obrigatório"})} />
                             {errors.typeOfInternship && <span>{errors.typeOfInternship.message}</span>}
-                        </FormGroupGeneric>
-                        <FormGroupGeneric>
-                            <FormLabel>Descrição do Estágio</FormLabel>
-                            <TextAreaGeneric {...register("description", {required: "Descrição é obrigatória"})} />
-                            {errors.description && <span>{errors.description.message}</span>}
                         </FormGroupGeneric>
                         <FormGroupGeneric>
                             <FormLabel>Requisitos</FormLabel>

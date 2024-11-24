@@ -37,7 +37,7 @@ export default function InternshipList() {
             <Head>
                 <title>Lista de estágios</title>
             </Head>
-            <InternshipListComponent internships={internships} title="Listas de Estágios" allowDetails={true} />
+            {internships.length > 0 ? <InternshipListComponent internships={internships} title="Listas de Estágios" allowDetails={true} /> : <div>Nenhum estágio cadastrado no momento</div>}
         </>
     );
 }
