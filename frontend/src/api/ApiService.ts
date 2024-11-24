@@ -224,6 +224,14 @@ const apiService = {
             return "Erro ao verificar estágio.";
         }
     },
+    async updateRelatorioStatus(idRelatorioFinal: number, status: string): Promise<void> {
+        try {
+            await baseURL.put(`/relatorios/${idRelatorioFinal}/status?status=${status}`);
+        } catch (error) {
+            console.error("Erro ao atualizar o status do relatório:", error);
+            throw error;
+        }
+    }
 };
 
 export default apiService;

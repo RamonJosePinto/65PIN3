@@ -11,7 +11,6 @@ import java.util.List;
 public class Estagiario extends Usuario {
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "fk_curso")
     private Curso curso;
 

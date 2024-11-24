@@ -117,10 +117,8 @@ export default function StageDetail({idExterno}: {idExterno: number}) {
     }, [user, relatorioFinal, stage]);
 
     console.log({horasEsperadas, horasGastas});
-    
 
     const handleSubmitStage = async () => {
-        
         if (horasGastas < horasEsperadas || horasGastas <= 0) {
             // Define a mensagem de erro e remove-a após 5 segundos
             setErrorMessage("Você não possui o tempo mínimo suficiente para submeter o estágio.");
@@ -146,6 +144,20 @@ export default function StageDetail({idExterno}: {idExterno: number}) {
         } catch (error) {
             console.error("Erro ao submeter o estágio:", error);
             alert("Erro ao submeter o estágio para avaliação. Tente novamente.");
+        }
+    };
+
+    const handleResubmitStage = async () => {
+        if (!relatorioFinal || relatorioFinal.status !== "Reprovado") return;
+
+        try {
+            // Atualiza o status do relatório final existente para "Pendente"
+            await apiService.updateRelatorioStatus(relatorioFinal.idRelatorioFinal, "Pendente");
+            alert("Relatório reenviado para avaliação com sucesso!");
+            setRelatorioFinal({...relatorioFinal, status: "Pendente"}); // Atualiza localmente o estado
+        } catch (error) {
+            console.error("Erro ao reenviar o relatório:", error);
+            alert("Erro ao reenviar o relatório para avaliação. Tente novamente.");
         }
     };
 
@@ -199,14 +211,17 @@ export default function StageDetail({idExterno}: {idExterno: number}) {
 
                 <ButtonWrapper>
                     {user?.role === "estagiario" && !stage.estagiario && podeInscrever ? (
-                        // Exibe o botão para inscrever-se no estágio, caso não esteja vinculado e possa se inscrever
                         <RegisterActivityButton onClick={() => router.push("/internship/enterprise")}>Inscrever-se no Estágio</RegisterActivityButton>
-                    ) : user?.role === "estagiario" && stage.estagiario?.idUsuario === user.idUsuario && !relatorioFinal ? (
+                    ) : user?.role === "estagiario" && stage.estagiario?.idUsuario === user.idUsuario && (!relatorioFinal || relatorioFinal.status === "Reprovado") ? (
                         <>
-                            {/* Exibe o botão para cadastrar atividade */}
+                            {/* Sempre exibe o botão de cadastrar atividade se o estágio estiver vinculado */}
                             <RegisterActivityButton onClick={() => router.push(`/internship/activities/register/${stage.idEstagio}`)}>Cadastrar Atividade</RegisterActivityButton>
-                            {/* Exibe o botão para submeter relatório */}
-                            <RegisterActivityButton onClick={handleSubmitStage}>Submeter para Avaliação</RegisterActivityButton>
+                            {/* Exibe o botão apropriado dependendo do status do relatório final */}
+                            {relatorioFinal?.status === "Reprovado" ? (
+                                <RegisterActivityButton onClick={handleResubmitStage}>Reenviar para Avaliação</RegisterActivityButton>
+                            ) : !relatorioFinal ? (
+                                <RegisterActivityButton onClick={handleSubmitStage}>Submeter para Avaliação</RegisterActivityButton>
+                            ) : null}
                         </>
                     ) : null}
                 </ButtonWrapper>
@@ -222,12 +237,39 @@ export default function StageDetail({idExterno}: {idExterno: number}) {
                 <SideBySideContainer>
                     {relatorioFinal && (
                         <DetailContainer>
-                            <DetailHeader style={{borderColor: "#4CAF50"}}>
-                                <h1 style={{color: "#4CAF50"}}>Relatório Final</h1>
+                            <DetailHeader
+                                style={{
+                                    borderColor: relatorioFinal.status === "Aprovado" ? "#4CAF50" : relatorioFinal.status === "Reprovado" ? "#FF0000" : "#FFC107",
+                                }}
+                            >
+                                <h1
+                                    style={{
+                                        color:
+                                            relatorioFinal.status === "Aprovado"
+                                                ? "#4CAF50" // Verde
+                                                : relatorioFinal.status === "Reprovado"
+                                                ? "#FF0000" // Vermelho
+                                                : "#FFC107", // Amarelo
+                                    }}
+                                >
+                                    Relatório Final
+                                </h1>
                             </DetailHeader>
                             <DetailSection>
                                 <DetailItem>
-                                    <strong>Status:</strong> {relatorioFinal.status}
+                                    <strong>Status:</strong>{" "}
+                                    <span
+                                        style={{
+                                            color:
+                                                relatorioFinal.status === "Aprovado"
+                                                    ? "#4CAF50" // Verde
+                                                    : relatorioFinal.status === "Reprovado"
+                                                    ? "#FF0000" // Vermelho
+                                                    : "#FFC107", // Amarelo
+                                        }}
+                                    >
+                                        {relatorioFinal.status}
+                                    </span>
                                 </DetailItem>
                                 <DetailItem>
                                     <strong>Comentário do Orientador:</strong> {relatorioFinal.comentarioOrientador || "Não há comentários disponíveis."}
@@ -252,8 +294,10 @@ export default function StageDetail({idExterno}: {idExterno: number}) {
                                     <strong>Email:</strong> {stage.estagiario.email}
                                 </DetailItem>
                                 <DetailItem>
-                                    {/* @ts-ignore */}
-                                    <strong>Curso:</strong> {stage.estagiario.curso || "Informação indisponível"}
+                                    <strong>Nome do curso:</strong> {stage.estagiario.curso.nome || "Informação indisponível"}
+                                </DetailItem>
+                                <DetailItem>
+                                    <strong>Campus do curso:</strong> {stage.estagiario.curso.campus || "Informação"}
                                 </DetailItem>
                             </DetailSection>
                             {stage?.empresa && (

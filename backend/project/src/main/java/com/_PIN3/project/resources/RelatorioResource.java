@@ -7,12 +7,12 @@ import com._PIN3.project.repository.AtividadeRepository;
 import com._PIN3.project.repository.EstagioRepository;
 import com._PIN3.project.repository.RelatorioFinalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/relatorios")
@@ -76,5 +76,21 @@ public class RelatorioResource {
         List<Estagio> estagios = estagioRepository.findByOrientadorId(idOrientador);
         return ResponseEntity.ok(estagios);
     }
+
+    @PutMapping("/{idRelatorioFinal}/status")
+    public ResponseEntity<?> updateRelatorioStatus(@PathVariable Integer idRelatorioFinal, @RequestParam String status) {
+        Optional<RelatorioFinal> relatorioOptional = relatorioFinalRepository.findById(idRelatorioFinal);
+
+        if (relatorioOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Relatório não encontrado.");
+        }
+
+        RelatorioFinal relatorio = relatorioOptional.get();
+        relatorio.setStatus(status);
+        relatorioFinalRepository.save(relatorio);
+
+        return ResponseEntity.ok("Status atualizado com sucesso.");
+    }
+
 
 }

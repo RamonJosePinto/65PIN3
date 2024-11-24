@@ -108,4 +108,5 @@ public class EstagioResource {
 
         return ResponseEntity.ok("Você não está vinculado a nenhum estágio em andamento.");
     }
+
 }
